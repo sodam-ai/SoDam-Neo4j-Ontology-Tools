@@ -1,0 +1,36 @@
+{
+  "name": "neo4j-ontology-tools",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --port 3000",
+    "build": "next build",
+    "start": "next start",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.52.0",
+    "cytoscape": "^3.30.2",
+    "cytoscape-cose-bilkent": "^4.1.0",
+    "neo4j-driver": "^5.28.1",
+    "next": "^15.3.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "zod": "^3.24.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.4",
+    "@testing-library/react": "^16.3.0",
+    "@types/node": "^22.14.1",
+    "@types/react": "^19.1.1",
+    "@types/react-dom": "^19.1.1",
+    "@vitejs/plugin-react": "^4.4.1",
+    "happy-dom": "^17.5.6",
+    "tailwindcss": "^4.1.4",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.2"
+  }
+}

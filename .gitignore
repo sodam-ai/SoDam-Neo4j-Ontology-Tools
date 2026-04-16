@@ -1,0 +1,38 @@
+# 의존성
+node_modules/
+.pnpm-store/
+
+# Next.js 빌드 결과물
+.next/
+out/
+
+# 환경변수 (민감정보 — 절대 커밋 금지!)
+.env.local
+.env.*.local
+
+# MCP 서버 빌드 결과물
+packages/mcp-server/dist/
+
+# OS 파일
+.DS_Store
+Thumbs.db
+
+# 로그
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# 에디터
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 플러그인 상태 파일
+.omc/
