@@ -1,3 +1,5 @@
+> **🇺🇸 [English](./README_EN.md)**
+
 # Neo4j 온톨로지 도구
 
 > 자연어만 입력하면 Neo4j 지식그래프가 자동으로 만들어지고,
@@ -203,4 +205,4 @@ pnpm typecheck      # 타입 체크
 
 MIT License - Copyright (c) 2026 SoDam AI Studio
 
-[English README](./README_EN.md)
+[🇺🇸 English README](./README_EN.md)

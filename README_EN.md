@@ -1,3 +1,5 @@
+> **🇰🇷 [한국어](./README.md)**
+
 # Neo4j Ontology Tools
 
 > Type natural language and a Neo4j knowledge graph is automatically created.
@@ -138,4 +140,4 @@ pnpm typecheck   # TypeScript type check
 
 MIT License - Copyright (c) 2026 SoDam AI Studio
 
-[한국어 README](./README.md)
+[🇰🇷 한국어 README](./README.md)
