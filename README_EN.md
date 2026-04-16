@@ -134,7 +134,7 @@ If Neo4j Desktop is connected, data is stored permanently. Without Neo4j, data i
 ### Install
 
 ```bash
-git clone https://github.com/sodam-ai/neo4j_ontology_tools.git
+git clone https://github.com/sodam-ai/neo4j-ontology-tools.git
 cd neo4j_ontology_tools
 pnpm install
 cp .env.local.example .env.local

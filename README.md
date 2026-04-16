@@ -134,7 +134,7 @@ Neo4j Desktop이 연결되어 있으면 데이터가 유지됩니다. Neo4j 없�
 ### 설치
 
 ```bash
-git clone https://github.com/sodam-ai/neo4j_ontology_tools.git
+git clone https://github.com/sodam-ai/neo4j-ontology-tools.git
 cd neo4j_ontology_tools
 pnpm install
 cp .env.local.example .env.local
