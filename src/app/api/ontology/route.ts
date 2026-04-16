@@ -7,13 +7,28 @@ import { getAllGraph, upsertConcept, addRelation } from '@/lib/neo4j/concept-rep
 import { upsertProperty } from '@/lib/neo4j/property-repo'
 import { upsertInstance } from '@/lib/neo4j/instance-repo'
 import { LLMOntologyResponseSchema } from '@/lib/llm/nl-to-cypher'
+import { getPageRankScores, getLouvainCommunities } from '@/lib/neo4j/gds'
 import type { LLMParsedNode } from '@/types/ontology'
 
 export async function GET() {
   try {
     await ensureInitialized()
     const graph = await getAllGraph()
-    return NextResponse.json(graph)
+
+    // GDS 데이터 병렬 조회 (미설치 시 빈 Map — 에러 아님)
+    const [pageRankScores, communityMap] = await Promise.all([
+      getPageRankScores(),
+      getLouvainCommunities(),
+    ])
+
+    // 노드에 pageRank + communityId 병합
+    const nodesWithGds = graph.nodes.map((node) => ({
+      ...node,
+      pageRank: pageRankScores.get(node.name) ?? 0,
+      communityId: communityMap.get(node.name) ?? 0,
+    }))
+
+    return NextResponse.json({ nodes: nodesWithGds, relations: graph.relations })
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
     return NextResponse.json(
@@ -58,9 +73,18 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    // 저장 후 전체 그래프 반환
+    // 저장 후 전체 그래프 반환 (GDS 데이터 포함)
     const graph = await getAllGraph()
-    return NextResponse.json(graph)
+    const [pageRankScores, communityMap] = await Promise.all([
+      getPageRankScores(),
+      getLouvainCommunities(),
+    ])
+    const nodesWithGds = graph.nodes.map((node) => ({
+      ...node,
+      pageRank: pageRankScores.get(node.name) ?? 0,
+      communityId: communityMap.get(node.name) ?? 0,
+    }))
+    return NextResponse.json({ nodes: nodesWithGds, relations: graph.relations })
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
     return NextResponse.json(

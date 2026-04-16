@@ -2,6 +2,7 @@
 // 앱 시작 시 1회 실행 (멱등성 보장 — IF NOT EXISTS)
 
 import { getDriver } from './connection'
+import { isGdsAvailable, ensureGdsProjection } from './gds'
 
 let initialized = false
 let initPromise: Promise<void> | null = null
@@ -46,8 +47,8 @@ async function runInit(): Promise<void> {
 
     console.log('[Neo4j] 초기화 완료: Constraint + Fulltext Index 생성')
 
-    // GDS 설치 여부 확인 (미설치 시 안내만, 에러 아님)
-    await checkGdsAvailability(session)
+    // GDS 설치 여부 확인 후 프로젝션 자동 생성
+    await checkGdsAndCreateProjection()
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
     console.warn(
@@ -61,11 +62,13 @@ async function runInit(): Promise<void> {
   }
 }
 
-async function checkGdsAvailability(session: ReturnType<ReturnType<typeof getDriver>['session']>): Promise<void> {
-  try {
-    await session.run('CALL gds.version() YIELD version RETURN version LIMIT 1')
-    console.log('[Neo4j] GDS (Graph Data Science) 라이브러리 감지됨')
-  } catch {
+async function checkGdsAndCreateProjection(): Promise<void> {
+  const available = await isGdsAvailable()
+  if (available) {
+    console.log('[Neo4j] GDS (Graph Data Science) 라이브러리 감지됨. 프로젝션 생성 중...')
+    await ensureGdsProjection()
+    console.log('[Neo4j] GDS 프로젝션 준비 완료 (ontology-graph)')
+  } else {
     console.info(
       '[Neo4j] GDS 라이브러리가 설치되지 않았습니다.\n' +
       'PageRank, 커뮤니티 감지 기능은 GDS 설치 후 사용 가능합니다.\n' +

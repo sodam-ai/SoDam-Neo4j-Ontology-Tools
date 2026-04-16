@@ -4,10 +4,18 @@
 // 노드 색상: Concept=#4A90D9, Property=#5CB85C, Instance=#F0AD4E
 // SSE ViewEvent (highlight/focus/reset) 처리
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useImperativeHandle, forwardRef } from 'react'
 import type cytoscape from 'cytoscape'
 import type { OntologyGraph, ViewEvent, NodeType, RelationType } from '@/types/ontology'
 import { NODE_COLORS, EDGE_COLORS } from '@/types/ontology'
+
+// 외부에서 호출 가능한 그래프 제어 메서드
+export interface GraphHandle {
+  zoomIn: () => void
+  zoomOut: () => void
+  fitView: () => void
+  applyFilter: (hiddenTypes: RelationType[]) => void
+}
 
 // Cytoscape 동적 import (브라우저 전용)
 let cytoscapeFn: typeof cytoscape | null = null
@@ -31,9 +39,31 @@ interface Props {
   onNodeClick?: (name: string) => void
 }
 
-export default function ForceDirectedGraph({ graph, viewEvent, onNodeClick }: Props) {
+const ForceDirectedGraph = forwardRef<GraphHandle, Props>(function ForceDirectedGraph(
+  { graph, viewEvent, onNodeClick }: Props,
+  ref
+) {
   const containerRef = useRef<HTMLDivElement>(null)
   const cyRef = useRef<cytoscape.Core | null>(null)
+
+  // 외부 제어 메서드 노출
+  useImperativeHandle(ref, () => ({
+    zoomIn: () => cyRef.current?.zoom(cyRef.current.zoom() * 1.3),
+    zoomOut: () => cyRef.current?.zoom(cyRef.current.zoom() * 0.7),
+    fitView: () => cyRef.current?.fit(undefined, 50),
+    applyFilter: (hiddenTypes: RelationType[]) => {
+      if (!cyRef.current) return
+      const cy = cyRef.current
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ;(cy.edges() as any).show()
+      if (hiddenTypes.length > 0) {
+        for (const t of hiddenTypes) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          ;(cy.edges(`[relType = "${t}"]`) as any).hide()
+        }
+      }
+    },
+  }))
 
   // 그래프 초기화 및 데이터 업데이트
   useEffect(() => {
@@ -262,4 +292,6 @@ export default function ForceDirectedGraph({ graph, viewEvent, onNodeClick }: Pr
       style={{ position: 'relative' }}
     />
   )
-}
+})
+
+export default ForceDirectedGraph

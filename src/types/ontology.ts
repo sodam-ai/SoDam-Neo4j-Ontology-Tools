@@ -20,6 +20,8 @@ export interface OntologyNode {
   source: 'natural_language' | 'manual' | 'import'
   // PageRank 점수 (GDS 미설치 시 undefined)
   pageRank?: number
+  // Louvain 커뮤니티 ID (GDS 미설치 시 undefined)
+  communityId?: number
 }
 
 export interface OntologyRelation {
